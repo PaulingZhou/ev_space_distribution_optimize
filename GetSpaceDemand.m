@@ -1,11 +1,22 @@
 clear;
 load('duration.mat');
 load('time_swap_dist.mat');
+load('space_ratio.mat');
 [building_relation, resident_relation, shopping_relation] = get_all_relation(duration_building2chargestation,duration_resident2chargestation,duration_shopping2chargestation);
 [building_space_demand, resident_space_demand, shopping_space_demand] = get_all_space_demand(building_relation, resident_relation, shopping_relation);
-day_space_demand = 0.6*building_space_demand + 0.3*shopping_space_demand+ 0.1*resident_space_demand;
-night_space_demand = 0.2*building_space_demand + 0.3*shopping_space_demand+ 0.5*resident_space_demand;
-weekend_space_demand = 0.1*building_space_demand + 0.4*shopping_space_demand+ 0.5*resident_space_demand;
+space_time_demand = space_ratio * [resident_space_demand';building_space_demand';shopping_space_demand'];
+for i = 1:size(space_time_demand,1)
+    space_time_demand(i,:) = space_time_demand(i,:)*swap_time_dist_update(i);
+end
+swap_server_start = zeros(size(space_time_demand));   %某时刻开始换电服务的车辆
+swap_server_continue = zeros(size(space_time_demand));    %某时刻正在进行换电服务的车辆
+swap_server_line = zeros(size(space_time_demand));    %%某时刻排队等待换电服务的车辆
+server_ability = 4;
+for i = 11:1440
+    swap_server_continue(i,:) = min(server_ability,swap_server_continue(i-1,:)-swap_server_start(i-10,:)+space_time_demand(i,:)+swap_server_line(i-1,:));
+    swap_server_start(i,:) = min(space_time_demand(i,:)+swap_server_line(i-1,:),4-(swap_server_continue(i-1,:)-swap_server_start(i-10,:)));
+    swap_server_line(i,:) = swap_server_line(i-1,:)-swap_server_start(i,:)+space_time_demand(i,:);
+end
 x = position_chargingstation(:,2);
 y =  position_chargingstation(:,1);
 z1(:,1) = day_space_demand*10;

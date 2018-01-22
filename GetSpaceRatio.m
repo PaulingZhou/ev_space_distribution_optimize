@@ -16,9 +16,9 @@ space_ratio(1081:1260,2) = 0.2;
 space_ratio(1261:1440,2) = 0.2;
 %ÉÌÒµÇø
 space_ratio(1:240,3) = 0;
-space_ratio(241:480,3) = 0:0.0004167:0.1;
-space_ratio(481:840,3) = 0.1;
-space_ratio(841:1080,3)=0.1:0.001667:0.5;
+space_ratio(241:480,3) = 0:0.0008334:0.2;
+space_ratio(481:840,3) = 0.2;
+space_ratio(841:1080,3)=0.2:0.001251:0.5;
 space_ratio(1081:1260,3) = 0.5:-0.002778:0;
 space_ratio(1261:1440,3) = 0;
 plot(space_ratio)
