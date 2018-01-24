@@ -13,7 +13,7 @@ load('swap_info.mat');
 % if sum(subsidy)
 %     1
 % end
-subsidy = zeros(5,1);
+% subsidy = zeros(5,1);
 [building_relation, resident_relation, shopping_relation] = get_all_relation(duration_building2chargestation,duration_resident2chargestation,duration_shopping2chargestation);
 [building_space_demand, resident_space_demand, shopping_space_demand] = get_all_space_demand(building_relation(:,neibour_swap_station), resident_relation(:,neibour_swap_station), shopping_relation(:,neibour_swap_station),subsidy);
 space_time_demand = space_ratio * [resident_space_demand';building_space_demand';shopping_space_demand'];
