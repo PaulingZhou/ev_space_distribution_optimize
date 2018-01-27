@@ -4,7 +4,6 @@ load('duration.mat');
 load('time_swap_dist.mat');
 load('space_ratio.mat');
 load('neibour_swap_stations.mat');
-opts.LBounds = 0; opts.UBounds = 1.5; 
 [building_relation, resident_relation, shopping_relation] = get_all_relation(duration_building2chargestation,duration_resident2chargestation,duration_shopping2chargestation);
 subsidy = zeros(89,1);
 [building_space_demand, resident_space_demand, shopping_space_demand] = get_all_space_demand(building_relation, resident_relation, shopping_relation,subsidy);
