@@ -12,7 +12,7 @@ for i = 1:size(space_time_demand,1)
     space_time_demand(i,:) = space_time_demand(i,:)*swap_time_dist_update(i);
 end
 swap_server_continue = zeros(size(space_time_demand));    
-swap_server_line = zeros(size(space_time_demand,1),size(space_time_demand,2),240);    
+swap_server_line = zeros(size(space_time_demand,1),size(space_time_demand,2),60);    
 server_ability = 4;
 for t = 1:849;
     for j = 1:size(space_time_demand,2)
