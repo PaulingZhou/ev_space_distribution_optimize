@@ -44,6 +44,6 @@ for t = time:time+9;
 end
 % t2 = clock;
 total_cost = subsidy_cost+line_cost;
-% plot(reshape(sum(sum(swap_server_line(time:time+9,neibour_swap_station,:))),240,1));
+% plot(reshape(sum(sum(swap_server_line(time:time+9,neibour_swap_station,:))),60,1));
 % save('swap_info','swap_server_continue','swap_server_line','swap_line_count');
 end

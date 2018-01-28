@@ -1,18 +1,16 @@
 clc;
 clear;
-load('duration.mat');
+load('relation.mat');
 load('time_swap_dist.mat');
 load('space_ratio.mat');
 load('neibour_swap_stations.mat');
-[building_relation, resident_relation, shopping_relation] = get_all_relation(duration_building2chargestation,duration_resident2chargestation,duration_shopping2chargestation);
 subsidy = zeros(89,1);
 [building_space_demand, resident_space_demand, shopping_space_demand] = get_all_space_demand(building_relation, resident_relation, shopping_relation,subsidy);
-space_time_demand = space_ratio * [resident_space_demand';building_space_demand';shopping_space_demand'];
-for i = 1:size(space_time_demand,1)
-    space_time_demand(i,:) = space_time_demand(i,:)*swap_time_dist_update(i);
-end
+space_time_demand_ratio = space_ratio * [resident_space_demand';building_space_demand';shopping_space_demand'];
+space_time_demand = space_time_demand_ratio.*repmat(swap_time_dist_update,1,size(space_time_demand_ratio,2));
+
 swap_server_continue = zeros(size(space_time_demand));    
-swap_server_line = zeros(size(space_time_demand,1),size(space_time_demand,2),60);    
+swap_server_line = zeros(size(space_time_demand,1),size(space_time_demand,2),10);    
 server_ability = 4;
 for t = 1:849;
     for j = 1:size(space_time_demand,2)
@@ -23,8 +21,6 @@ for t = 1:849;
             space_time_demand(t,j) = space_time_demand(t,j) - serve_start;
             if space_time_demand(t,j) == 0
                 break;
-            else
-                1;
             end
         end
     end
