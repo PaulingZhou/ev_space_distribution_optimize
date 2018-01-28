@@ -7,3 +7,5 @@ swap_info.mat.bak
 variablescmaes.mat
 initial_args.mat
 matlab.mat
+
+*.m~

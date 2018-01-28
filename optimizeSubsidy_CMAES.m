@@ -3,11 +3,11 @@ clear;
 load('neibour_swap_stations.mat');
 opts.LBounds = 0; opts.UBounds = 1.8;
 for i = 1:size(neibour_swap_stations,1)
-    start_time = 860;
+    start_time = 880;
     end_time = 1100;
     for time = start_time:10:end_time
         time
-        neibour_swap_station = neibour_swap_stations{i};
+        neibour_swap_station = neibour_swap_stations{2};
         save('initial_args','time','neibour_swap_station');
         subsidy((time-start_time+10)/10,:) = cmaes('optimize_space_demand', zeros(size(neibour_swap_station,2),1),0.6, opts);
         update_swap_info(subsidy((time-start_time+10)/10,:)');
