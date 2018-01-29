@@ -1,39 +1,38 @@
 clc;
 clear;
-load('duration.mat');
+load('relation.mat');
 load('time_swap_dist.mat');
 load('space_ratio.mat');
 load('neibour_swap_stations.mat');
-load('swap_info.mat');
-[building_relation, resident_relation, shopping_relation] = get_all_relation(duration_building2chargestation,duration_resident2chargestation,duration_shopping2chargestation);
-subsidy = zeros(89,1);
-[building_space_demand, resident_space_demand, shopping_space_demand] = get_all_space_demand(building_relation, resident_relation, shopping_relation,subsidy);
-space_time_demand_update = space_ratio * [resident_space_demand';building_space_demand';shopping_space_demand'];
-for i = 1:size(space_time_demand_update,1)
-    space_time_demand_update(i,:) = space_time_demand_update(i,:)*swap_time_dist_update(i);
-end
-swap_server_continue_update = zeros(size(space_time_demand_update));
-swap_server_line_update = zeros(size(space_time_demand_update,1),size(space_time_demand_update,2),100);
-server_ability = 4;
-for t = 1:1440;
-    for j = 1:size(space_time_demand_update,2)
-        for k = t:1430
-            serve_start = min(space_time_demand_update(t,j),server_ability-swap_server_continue_update(k,j));
-            swap_server_line_update(t,j,k-t+1) = serve_start;
-            swap_server_continue_update(k:k+9,j) = swap_server_continue_update(k:k+9,j)+serve_start;
-            space_time_demand_update(t,j) = space_time_demand_update(t,j) - serve_start;
-            if space_time_demand_update(t,j) == 0
-                break;
+load('position.mat');
+load('subsidy_3.mat');
+load('subsidy_2.mat');
+subsidy = zeros(89,144);
+subsidy(neibour_swap_stations{2},88:110)=subsidy_2';
+subsidy(neibour_swap_stations{3},88:110)=subsidy_3';
+swap_server_continue = zeros(1440,89);    
+swap_server_line = zeros(1440,89,1);   
+line_cost = 0;
+for i = 1:144
+    [building_space_demand, resident_space_demand, shopping_space_demand] = get_all_space_demand(building_relation, resident_relation, shopping_relation,subsidy(:,i));
+    space_time_demand_ratio = space_ratio * [resident_space_demand';building_space_demand';shopping_space_demand'];
+    space_time_demand = space_time_demand_ratio.*repmat(swap_time_dist_update,1,size(space_time_demand_ratio,2)); 
+    server_ability = 4;
+    for t = i*10-9:i*10
+        for j = 1:size(space_time_demand,2)
+            for k = t:1430
+                serve_start = min(space_time_demand(t,j),server_ability-swap_server_continue(k,j));
+                swap_server_line(t,j,k-t+1) = serve_start;
+                swap_server_continue(k:k+9,j) = swap_server_continue(k:k+9,j)+serve_start;
+                space_time_demand(t,j) = space_time_demand(t,j) - serve_start;
+                line_cost = line_cost + serve_start*0.0045*(k-t)^2;
+                if space_time_demand(t,j) == 0
+                    break;
+                end
             end
-        end
+        end        
     end
 end
-space_time_demand_origin = space_time_demand_update;
-swap_server_line_origin = swap_server_line_update;
-swap_server_continue_origin = swap_server_continue_update;
-% space_time_demand_update((850:1100),neibour_swap_stations{1}) = space_time_demand(neibour_swap_stations{1},(850:1100));
-swap_server_line_update((850:1100),neibour_swap_stations{1},1:100) = swap_server_line((850:1100),neibour_swap_stations{1},1:100);
-swap_server_continue_update((850:1100),neibour_swap_stations{1}) = swap_server_continue_update((850:1100),neibour_swap_stations{1});
-swap_server_line_sum_origin = reshape(sum(sum(swap_server_line_origin(:,:,1:100))),100,1);
-swap_server_line_sum_update = reshape(sum(sum(swap_server_line_update(:,:,1:100))),100,1);
-plot(swap_server_line_sum_update);
+size_time = size(swap_server_line,3);
+hold on;
+plot(reshape(sum(sum(swap_server_line(:,:,2:size_time))),size_time-1,1),'r');

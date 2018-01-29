@@ -26,6 +26,9 @@ for t = time:time+9;
         for k = t:1440
             index = neibour_swap_station(j);
             serve_start = min(space_time_demand(t-time+1,index),server_ability-swap_server_continue(k,index));
+            if serve_start < 0
+                1
+            end
             swap_server_line(t,index,k-t+1) = serve_start;
             swap_server_continue(k:k+9,index) = swap_server_continue(k:k+9,index)+serve_start;
             space_time_demand(t-time+1,index) = space_time_demand(t-time+1,index) - serve_start;
