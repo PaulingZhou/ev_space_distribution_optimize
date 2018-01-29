@@ -3,7 +3,7 @@ clear;
 load('neibour_swap_stations.mat');
 opts.LBounds = 0; opts.UBounds = 1.8;
 for i = 1:size(neibour_swap_stations,1)
-    start_time = 860;
+    start_time = 880;
     end_time = 1100;
     for time = start_time:10:end_time
         time
