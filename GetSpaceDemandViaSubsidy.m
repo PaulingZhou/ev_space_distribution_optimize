@@ -6,8 +6,10 @@ load('space_ratio.mat');
 load('neibour_swap_stations.mat');
 load('position.mat');
 load('subsidy_3.mat');
+load('subsidy_2.mat');
 subsidy = zeros(89,144);
-% subsidy(neibour_swap_stations{3},88:110)=subsidy_3';
+subsidy(neibour_swap_stations{2},88:110)=subsidy_2';
+subsidy(neibour_swap_stations{3},88:110)=subsidy_3';
 swap_server_continue = zeros(1440,89);    
 swap_server_line = zeros(1440,89,1);   
 line_cost = 0;
@@ -33,4 +35,4 @@ for i = 1:144
 end
 size_time = size(swap_server_line,3);
 hold on;
-plot(reshape(sum(sum(swap_server_line(:,:,2:size_time))),size_time-1,1));
+plot(reshape(sum(sum(swap_server_line(:,:,2:size_time))),size_time-1,1),'r');
